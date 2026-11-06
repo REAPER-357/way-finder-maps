@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#16a34a">
+<link rel="icon" type="image/png" href="small-icon.png">
+<title>Blue Jay Bookmarks</title>
+<!--DEV:START-->
+<!-- Quick browser testing only. `npm run build` replaces this block with the compiled, offline files. -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config = { darkMode: 'class' };</script>
+<!--DEV:END-->
+<style>
+/* Icons: SVG files in assets/icons/ drawn as a mask, so they take the text colour and size (1em). */
+.ic{display:inline-block;width:1em;height:1em;vertical-align:-0.125em;flex-shrink:0;background-color:currentColor;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;-webkit-mask-size:contain;mask-size:contain}
+.ic-spin{animation:ic-rot 1s linear infinite}@keyframes ic-rot{to{transform:rotate(360deg)}}
+.ic-bookmark{-webkit-mask-image:url(assets/icons/bookmark.svg);mask-image:url(assets/icons/bookmark.svg)}
+.ic-check{-webkit-mask-image:url(assets/icons/check.svg);mask-image:url(assets/icons/check.svg)}
+.ic-chevron-right{-webkit-mask-image:url(assets/icons/chevron-right.svg);mask-image:url(assets/icons/chevron-right.svg)}
+.ic-chevrons-down{-webkit-mask-image:url(assets/icons/chevrons-down.svg);mask-image:url(assets/icons/chevrons-down.svg)}
+.ic-chevrons-up{-webkit-mask-image:url(assets/icons/chevrons-up.svg);mask-image:url(assets/icons/chevrons-up.svg)}
+.ic-circle-check{-webkit-mask-image:url(assets/icons/circle-check.svg);mask-image:url(assets/icons/circle-check.svg)}
+.ic-cloud{-webkit-mask-image:url(assets/icons/cloud.svg);mask-image:url(assets/icons/cloud.svg)}
+.ic-compass{-webkit-mask-image:url(assets/icons/compass.svg);mask-image:url(assets/icons/compass.svg)}
+.ic-copy{-webkit-mask-image:url(assets/icons/copy.svg);mask-image:url(assets/icons/copy.svg)}
+.ic-download{-webkit-mask-image:url(assets/icons/download.svg);mask-image:url(assets/icons/download.svg)}
+.ic-external-link{-webkit-mask-image:url(assets/icons/external-link.svg);mask-image:url(assets/icons/external-link.svg)}
+.ic-eye{-webkit-mask-image:url(assets/icons/eye.svg);mask-image:url(assets/icons/eye.svg)}
+.ic-eye-off{-webkit-mask-image:url(assets/icons/eye-off.svg);mask-image:url(assets/icons/eye-off.svg)}
+.ic-file{-webkit-mask-image:url(assets/icons/file.svg);mask-image:url(assets/icons/file.svg)}
+.ic-file-plus{-webkit-mask-image:url(assets/icons/file-plus.svg);mask-image:url(assets/icons/file-plus.svg)}
+.ic-folder{-webkit-mask-image:url(assets/icons/folder.svg);mask-image:url(assets/icons/folder.svg)}
+.ic-folder-open{-webkit-mask-image:url(assets/icons/folder-open.svg);mask-image:url(assets/icons/folder-open.svg)}
+.ic-folder-tree{-webkit-mask-image:url(assets/icons/folder-tree.svg);mask-image:url(assets/icons/folder-tree.svg)}
+.ic-layers{-webkit-mask-image:url(assets/icons/layers.svg);mask-image:url(assets/icons/layers.svg)}
+.ic-layout-grid{-webkit-mask-image:url(assets/icons/layout-grid.svg);mask-image:url(assets/icons/layout-grid.svg)}
+.ic-lock{-webkit-mask-image:url(assets/icons/lock.svg);mask-image:url(assets/icons/lock.svg)}
+.ic-moon{-webkit-mask-image:url(assets/icons/moon.svg);mask-image:url(assets/icons/moon.svg)}
+.ic-pencil{-webkit-mask-image:url(assets/icons/pencil.svg);mask-image:url(assets/icons/pencil.svg)}
+.ic-plus{-webkit-mask-image:url(assets/icons/plus.svg);mask-image:url(assets/icons/plus.svg)}
+.ic-refresh-cw{-webkit-mask-image:url(assets/icons/refresh-cw.svg);mask-image:url(assets/icons/refresh-cw.svg)}
+.ic-search{-webkit-mask-image:url(assets/icons/search.svg);mask-image:url(assets/icons/search.svg)}
+.ic-settings{-webkit-mask-image:url(assets/icons/settings.svg);mask-image:url(assets/icons/settings.svg)}
+.ic-square-check{-webkit-mask-image:url(assets/icons/square-check.svg);mask-image:url(assets/icons/square-check.svg)}
+.ic-star{-webkit-mask-image:url(assets/icons/star.svg);mask-image:url(assets/icons/star.svg)}
+.ic-star-filled{-webkit-mask-image:url(assets/icons/star-filled.svg);mask-image:url(assets/icons/star-filled.svg)}
+.ic-sticky-note{-webkit-mask-image:url(assets/icons/sticky-note.svg);mask-image:url(assets/icons/sticky-note.svg)}
+.ic-sun{-webkit-mask-image:url(assets/icons/sun.svg);mask-image:url(assets/icons/sun.svg)}
+.ic-trash-2{-webkit-mask-image:url(assets/icons/trash-2.svg);mask-image:url(assets/icons/trash-2.svg)}
+.ic-upload{-webkit-mask-image:url(assets/icons/upload.svg);mask-image:url(assets/icons/upload.svg)}
+.ic-venetian-mask{-webkit-mask-image:url(assets/icons/venetian-mask.svg);mask-image:url(assets/icons/venetian-mask.svg)}
+.ic-wand-sparkles{-webkit-mask-image:url(assets/icons/wand-sparkles.svg);mask-image:url(assets/icons/wand-sparkles.svg)}
+.ic-x{-webkit-mask-image:url(assets/icons/x.svg);mask-image:url(assets/icons/x.svg)}
+html, body { -webkit-tap-highlight-color: transparent; }
+body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(156,163,175,.5); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(107,114,128,.8); }
+/* keep content clear of the Android status bar / gesture bar */
+.safe-top { padding-top: env(safe-area-inset-top); }
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+#selectionBar { bottom: calc(1rem + env(safe-area-inset-bottom)); }
+</style>
+</head>
+<body class="h-full bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200 flex flex-col">
+
+<header class="safe-top bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-30 shadow-sm">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    <div class="flex items-center space-x-3 min-w-0">
+      <div id="logoBtn" onclick="logoTap()" class="w-10 h-10 rounded-xl bg-green-600 text-white flex items-center justify-center shadow-md flex-shrink-0 overflow-hidden select-none cursor-default" style="-webkit-tap-highlight-color:transparent">
+        <img src="small-icon.png" alt="" draggable="false" class="w-10 h-10 object-cover" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><i class="ic ic-compass" style="display:none"></i>
+      </div>
+      <h1 class="min-w-0 leading-tight"><span class="block text-lg sm:text-xl font-extrabold tracking-wide">BLUE JAY</span><span class="block text-[11px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 tracking-wide">Bookmarks</span></h1>
+    </div>
+    <div class="flex items-center space-x-2 sm:space-x-3 flex-shrink-0">
+      <button onclick="openModal()" class="flex items-center space-x-2 bg-green-600 hover:bg-green-700 text-white px-3 sm:px-4 py-2 rounded-xl text-sm font-medium shadow-sm transition active:scale-95" aria-label="Add bookmark">
+        <i class="ic ic-plus"></i><span class="hidden sm:inline">Add Bookmark</span>
+      </button>
+      <button onclick="openSyncModal()" id="syncBtn" class="relative p-2 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300 transition" title="Sync" aria-label="Sync">
+        <i id="syncIcon" class="ic ic-cloud text-lg"></i>
+        <span id="syncDot" class="hidden absolute top-1 right-1 w-2.5 h-2.5 rounded-full border-2 border-white dark:border-gray-800"></span>
+      </button>
+      <button onclick="openDupModal()" class="p-2 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300 transition" title="Find duplicates" aria-label="Find duplicates">
+        <i class="ic ic-copy text-lg"></i>
+      </button>
+      <button onclick="openSettingsModal()" class="p-2 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300 transition" title="Settings" aria-label="Settings">
+        <i class="ic ic-settings text-lg"></i>
+      </button>
+    </div>
+  </div>
+</header>
+<div id="vaultBanner" class="hidden items-center justify-between gap-2 px-4 py-2 bg-purple-600 text-white text-sm">
+  <span class="min-w-0 truncate"><i class="ic ic-eye-off mr-2"></i>Hidden vault</span>
+  <span class="flex items-center gap-2 flex-shrink-0">
+    <button onclick="changePin()" class="px-2.5 py-1 rounded-lg bg-white/20 hover:bg-white/30">Change PIN</button>
+    <button onclick="lockVault()" class="px-2.5 py-1 rounded-lg bg-white/20 hover:bg-white/30"><i class="ic ic-lock mr-1"></i>Lock</button>
+  </span>
+</div>
+
+<main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-6">
+  <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm flex flex-col md:flex-row gap-4 items-center justify-between">
+    <div class="relative w-full md:w-96">
+      <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400"><i class="ic ic-search"></i></span>
+      <input type="text" id="searchInput" oninput="handleSearch()" placeholder="Search name, domain, tag, note...  ( / )"
+        class="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition">
+    </div>
+    <div class="flex items-center space-x-3 w-full md:w-auto justify-end">
+      <select id="sortSelect" onchange="handleSort()" class="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-green-500 cursor-pointer">
+        <option value="date-desc">Date Added (Newest)</option>
+        <option value="date-asc">Date Added (Oldest)</option>
+        <option value="alpha-asc">Alphabetical (A-Z)</option>
+        <option value="alpha-desc">Alphabetical (Z-A)</option>
+      </select>
+      <div class="flex bg-gray-100 dark:bg-gray-700 p-1 rounded-xl">
+        <button onclick="setViewMode('list')" id="listViewBtn" class="px-3 py-1.5 rounded-lg text-sm font-medium transition flex items-center space-x-1">
+          <i class="ic ic-folder-tree"></i><span class="hidden sm:inline">Tree</span>
+        </button>
+        <button onclick="setViewMode('tile')" id="tileViewBtn" class="px-3 py-1.5 rounded-lg text-sm font-medium transition flex items-center space-x-1">
+          <i class="ic ic-layout-grid"></i><span class="hidden sm:inline">Tile</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex items-center space-x-2 overflow-x-auto pb-2" id="folderBar"></div>
+
+  <div class="flex flex-wrap items-center gap-2 text-xs font-medium -mt-3">
+    <button onclick="toggleSelectAllVisible()" class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition"><i class="ic ic-square-check mr-1"></i>Select all / none</button>
+    <span id="treeTools" class="flex items-center gap-2">
+      <button onclick="expandAll()" class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition"><i class="ic ic-chevrons-down mr-1"></i>Expand all</button>
+      <button onclick="collapseAll()" class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition"><i class="ic ic-chevrons-up mr-1"></i>Collapse all</button>
+    </span>
+  </div>
+
+  <div id="bookmarkContainer" class="flex-1 space-y-8"></div>
+</main>
+
+<!-- Selection bar -->
+<div id="selectionBar" class="fixed left-1/2 -translate-x-1/2 z-40 hidden w-[calc(100%-2rem)] max-w-3xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-2xl shadow-2xl px-4 py-3 flex-wrap items-center gap-3 text-sm">
+  <span class="font-semibold"><span id="selCount">0</span> selected</span>
+  <input id="moveFolder" list="folderSuggestions" placeholder="Folder (blank = No Folder)" class="flex-1 min-w-[10rem] px-3 py-1.5 rounded-lg bg-white/10 dark:bg-gray-100 border border-white/20 dark:border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 placeholder-gray-400">
+  <button onclick="bulkMove()" class="px-3 py-1.5 rounded-lg bg-green-600 hover:bg-green-700 text-white font-medium transition"><i class="ic ic-folder-open mr-1"></i>Move</button>
+  <button onclick="bulkFavourite()" class="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-medium transition" title="Favourite / unfavourite" aria-label="Favourite or unfavourite"><i class="ic ic-star"></i></button>
+  <button onclick="bulkHide()" class="px-3 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-700 text-white font-medium transition"><i id="bulkHideIcon" class="ic ic-eye-off mr-1"></i><span id="bulkHideLabel">Hide</span></button>
+  <button onclick="bulkDelete()" class="px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white font-medium transition"><i class="ic ic-trash-2 mr-1"></i>Delete</button>
+  <button onclick="clearSelection()" class="px-2 py-1.5 rounded-lg hover:bg-white/10 dark:hover:bg-gray-200 transition" title="Clear selection" aria-label="Clear selection"><i class="ic ic-x"></i></button>
+</div>
+
+<!-- Modal: Add / Edit -->
+<div id="bookmarkModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
+  <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-lg w-full max-h-[95vh] overflow-y-auto p-6 shadow-2xl border border-gray-200 dark:border-gray-700">
+    <div class="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-gray-700">
+      <h3 id="modalTitle" class="text-lg font-bold">Add New Bookmark</h3>
+      <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition" aria-label="Close"><i class="ic ic-x text-lg"></i></button>
+    </div>
+    <form id="bookmarkForm" onsubmit="saveBookmark(event)" class="space-y-4 pt-4">
+      <input type="hidden" id="bookmarkId">
+      <div>
+        <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Bookmark Name *</label>
+        <input type="text" id="bmName" required placeholder="e.g. GitHub Repository" class="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-green-500 focus:outline-none">
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">URL Link *</label>
+        <input type="text" id="bmUrl" required placeholder="example.com or https://example.com" class="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-green-500 focus:outline-none">
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Folder</label>
+          <input type="text" id="bmFolder" list="folderSuggestions" placeholder="No Folder" value="No Folder" class="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-green-500 focus:outline-none">
+          <datalist id="folderSuggestions"></datalist>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Tags (comma separated)</label>
+          <input type="text" id="bmTags" placeholder="Work, travel, dev" class="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-green-500 focus:outline-none">
+        </div>
+      </div>
+      <div class="flex items-center gap-6 py-1 flex-wrap">
+        <label class="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center space-x-2 cursor-pointer">
+          <input type="checkbox" id="bmFavorite" class="w-4 h-4 accent-amber-500 rounded">
+          <i class="ic ic-star text-amber-500"></i><span>Favourite</span>
+        </label>
+        <label class="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center space-x-2 cursor-pointer">
+          <input type="checkbox" id="bmHidden" class="w-4 h-4 accent-purple-600 rounded">
+          <i class="ic ic-eye-off text-purple-500"></i><span>Hidden (PIN vault)</span>
+        </label>
+        <label class="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center space-x-2 cursor-pointer">
+          <input type="checkbox" id="bmIncognito" class="w-4 h-4 accent-green-600 rounded">
+          <i class="ic ic-venetian-mask text-purple-500"></i><span>Incognito Only tag</span>
+        </label>
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Notes</label>
+        <textarea id="bmNote" rows="2" placeholder="Optional notes about this bookmark..." class="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-green-500 focus:outline-none"></textarea>
+      </div>
+      <div class="flex items-center justify-end space-x-3 pt-2">
+        <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-xl text-sm font-medium bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition">Cancel</button>
+        <button type="submit" class="px-5 py-2 rounded-xl text-sm font-medium bg-green-600 hover:bg-green-700 text-white shadow-sm transition">Save Bookmark</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal: Duplicate finder -->
+<div id="dupModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
+  <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-3xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-gray-200 dark:border-gray-700">
+    <div class="flex items-center justify-between p-6 pb-4 border-b border-gray-100 dark:border-gray-700">
+      <h3 class="text-lg font-bold flex items-center space-x-2"><i class="ic ic-copy text-green-600"></i><span>Duplicate Finder</span></h3>
+      <button onclick="closeDupModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition" aria-label="Close"><i class="ic ic-x text-lg"></i></button>
+    </div>
+    <div class="px-6 pt-4 space-y-3">
+      <div class="flex flex-wrap items-center gap-3">
+        <div class="flex bg-gray-100 dark:bg-gray-700 p-1 rounded-xl">
+          <button onclick="setDupMode('exact')" id="dupExactBtn" class="px-3 py-1.5 rounded-lg text-sm font-medium transition">Exact copies</button>
+          <button onclick="setDupMode('domain')" id="dupDomainBtn" class="px-3 py-1.5 rounded-lg text-sm font-medium transition">Same site, slight differences</button>
+        </div>
+        <select id="dupLevel" onchange="setDupLevel()" class="hidden bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-sm rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 cursor-pointer">
+          <option value="strict">Very close (1 character)</option>
+          <option value="normal" selected>Close (up to 3 characters)</option>
+          <option value="loose">Any page on the same site</option>
+        </select>
+        <span id="dupSummary" class="text-xs text-gray-500 dark:text-gray-400"></span>
+      </div>
+      <p id="dupHelp" class="text-xs text-gray-500 dark:text-gray-400"></p>
+      <label class="flex items-center space-x-2 text-xs text-gray-600 dark:text-gray-300 cursor-pointer">
+        <input type="checkbox" id="dupMerge" checked class="w-4 h-4 accent-green-600 rounded">
+        <span>When deleting, merge tags, notes and favourite into the bookmark that is kept</span>
+      </label>
+    </div>
+    <div id="dupBody" class="flex-1 overflow-y-auto px-6 py-4 space-y-4"></div>
+    <div class="flex flex-wrap items-center justify-between gap-3 p-6 pt-4 border-t border-gray-100 dark:border-gray-700">
+      <button onclick="autoSelectDups()" class="px-4 py-2 rounded-xl text-sm font-medium bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition"><i class="ic ic-wand-sparkles mr-1"></i>Auto-select extras</button>
+      <div class="flex items-center gap-3">
+        <button onclick="closeDupModal()" class="px-4 py-2 rounded-xl text-sm font-medium bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition">Close</button>
+        <button onclick="deleteSelectedDups()" class="px-4 py-2 rounded-xl text-sm font-medium bg-red-600 hover:bg-red-700 text-white transition"><i class="ic ic-trash-2 mr-1"></i>Delete selected (<span id="dupSelCount">0</span>)</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Sync -->
+<div id="syncModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
+  <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-lg w-full max-h-[95vh] overflow-y-auto p-6 shadow-2xl border border-gray-200 dark:border-gray-700">
+    <div class="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-gray-700">
+      <h3 class="text-lg font-bold flex items-center space-x-2"><i class="ic ic-cloud text-green-600"></i><span>Sync between devices</span></h3>
+      <button onclick="closeSyncModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition" aria-label="Close"><i class="ic ic-x text-lg"></i></button>
+    </div>
+    <div class="space-y-4 pt-4 text-sm">
+      <div>
+        <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Sync method</label>
+        <select id="syncProvider" onchange="onSyncProviderChange()" class="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-green-500 focus:outline-none">
+          <option value="off">Off: manual export / import only</option>
+          <option value="file">Shared file (Drive, Syncthing, Dropbox folder)</option>
+          <option value="firebase">Firebase (Google), your own free project</option>
+          <option value="supabase">Supabase, your own free project</option>
+          <option value="webdav">My own server (WebDAV / Nextcloud)</option>
+        </select>
+      </div>
+
+      <div id="syncPanel-off" class="hidden text-xs text-gray-500 dark:text-gray-400">Nothing is sent anywhere. Use Settings, Export and Import to move bookmarks between devices by hand. Importing merges safely, so it can be repeated.</div>
+
+      <div id="syncPanel-file" class="hidden space-y-3">
+        <p id="syncFileHelp" class="text-xs text-gray-500 dark:text-gray-400"></p>
+        <div id="syncFileDesktop" class="hidden flex flex-wrap items-center gap-2">
+          <button onclick="chooseSyncFile(false)" class="px-3 py-2 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 font-medium transition"><i class="ic ic-file mr-1"></i>Choose existing file</button>
+          <button onclick="chooseSyncFile(true)" class="px-3 py-2 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 font-medium transition"><i class="ic ic-file-plus mr-1"></i>Create new file</button>
+          <span id="syncFileName" class="text-xs text-gray-500 dark:text-gray-400"></span>
+        </div>
+      </div>
+
+      <div id="syncPanel-firebase" class="hidden space-y-3">
+        <p class="text-xs text-gray-500 dark:text-gray-400">Create a free project at console.firebase.google.com, add a Web app, enable Authentication (Email/Password) and a Firestore database, then paste the two values below. Full steps and the security rules are in the README.</p>
+        <input id="fbApiKey" type="text" autocomplete="off" placeholder="Web API key" class="sync-in w-full px-3.5 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-green-500 focus:outline-none">
+        <input id="fbProjectId" type="text" autocomplete="off" placeholder="Project ID" class="sync-in w-full px-3.5 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-green-500 focus:outline-none">
+        <div class="sync-account space-y-3">
+          <input id="fbEmail" type="email" autocomplete="username" placeholder="Email" class="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-green-500 focus:outline-none">
+          <input id="fbPassword" type="password" autocomplete="current-password" placeholder="Password (not stored on this device)" class="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-green-500 focus:outline-none">
+          <div class="flex gap-2">
+            <button onclick="syncSignIn(false)" class="px-3 py-2 rounded-xl bg-green-600 hover:bg-green-700 text-white font-medium transition">Sign in</button>
+            <button onclick="syncSignIn(true)" class="px-3 py-2 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 font-medium transition">Create account</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="syncPanel-supabase" class="hidden space-y-3">
+        <p class="text-xs text-gray-500 dark:text-gray-400">Create a free project at supabase.com, run the SQL from the README once, then paste the project URL and the anon (public) key from Project Settings, API.</p>
+        <input id="sbUrl" type="url" autocomplete="off" placeholder="Project URL (https://xxxx.supabase.co)" class="sync-in w-full px-3.5 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-green-500 focus:outline-none">
+        <input id="sbKey" type="text" autocomplete="off" placeholder="Anon (public) key" class="sync-in w-full px-3.5 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-green-500 focus:outline-none">
+        <div class="sync-account space-y-3">
+          <input id="sbEmail" type="email" autocomplete="username" placeholder="Email" class="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-green-500 focus:outline-none">
+          <input id="sbPassword" type="password" autocomplete="current-password" placeholder="Password (not stored on this device)" class="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-green-500 focus:outline-none">
+          <div class="flex gap-2">
+            <button onclick="syncSignIn(false)" class="px-3 py-2 rounded-xl bg-green-600 hover:bg-green-700 text-white font-medium transition">Sign in</button>
+            <button onclick="syncSignIn(true)" class="px-3 py-2 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 font-medium transition">Create account</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="syncPanel-webdav" class="hidden space-y-3">
+        <p class="text-xs text-gray-500 dark:text-gray-400">Address of one file on your server, for example a Nextcloud link like https://cloud.example.com/remote.php/dav/files/USER/Wayfinder/bookmarks.json (the folder must exist). Use an app password, not your main one. It is stored on this device only.</p>
+        <input id="davUrl" type="url" autocomplete="off" placeholder="https://server/path/bookmarks.json" class="sync-in w-full px-3.5 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-green-500 focus:outline-none">
+        <input id="davUser" type="text" autocomplete="username" placeholder="Username" class="sync-in w-full px-3.5 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-green-500 focus:outline-none">
+        <input id="davPass" type="password" autocomplete="current-password" placeholder="Password / app password" class="sync-in w-full px-3.5 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-green-500 focus:outline-none">
+      </div>
+
+      <div id="syncCommon" class="hidden space-y-3 pt-1">
+        <div id="syncAccountLine" class="hidden text-xs text-green-600 dark:text-green-400"></div>
+        <label id="syncAutoRow" class="flex items-center space-x-2 cursor-pointer">
+          <input type="checkbox" id="syncAuto" onchange="onSyncAutoChange()" class="w-4 h-4 accent-green-600 rounded">
+          <span>Sync automatically (when the app opens, after changes, and when it comes back to the screen)</span>
+        </label>
+        <div class="flex flex-wrap items-center gap-2">
+          <button id="syncNowBtn" onclick="syncNow()" class="px-4 py-2 rounded-xl bg-green-600 hover:bg-green-700 text-white font-medium transition"><i class="ic ic-refresh-cw mr-1"></i>Sync now</button>
+          <button onclick="syncDisconnect()" class="px-3 py-2 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 font-medium transition">Disconnect</button>
+        </div>
+        <div id="syncStatus" class="text-xs text-gray-500 dark:text-gray-400 break-words"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Settings -->
+<div id="settingsModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
+  <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-gray-200 dark:border-gray-700 max-h-[95vh] overflow-y-auto">
+    <div class="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-gray-700">
+      <h3 class="text-lg font-bold flex items-center space-x-2"><i class="ic ic-settings text-green-600"></i><span>Settings &amp; Data</span></h3>
+      <button onclick="closeSettingsModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition" aria-label="Close"><i class="ic ic-x text-lg"></i></button>
+    </div>
+    <div class="space-y-6 pt-6">
+      <div class="flex items-center justify-between">
+        <div><h4 class="text-sm font-semibold">Appearance Theme</h4><p class="text-xs text-gray-500 dark:text-gray-400">Switch between light and dark mode</p></div>
+        <button onclick="toggleTheme()" class="px-4 py-2 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-sm font-medium transition flex items-center space-x-2">
+          <i id="themeIcon" class="ic ic-sun text-amber-500"></i><span id="themeText">Light</span>
+        </button>
+      </div>
+      <hr class="border-gray-100 dark:border-gray-700">
+      <div class="flex items-center justify-between">
+        <div><h4 class="text-sm font-semibold">Sync between devices</h4><p class="text-xs text-gray-500 dark:text-gray-400">File, Firebase, Supabase or your own server</p></div>
+        <button onclick="closeSettingsModal(); openSyncModal()" class="px-4 py-2 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-sm font-medium transition flex items-center space-x-2">
+          <i class="ic ic-cloud"></i><span>Open</span>
+        </button>
+      </div>
+      <hr class="border-gray-100 dark:border-gray-700">
+      <div class="flex items-center justify-between">
+        <div><h4 class="text-sm font-semibold">Duplicate Finder</h4><p class="text-xs text-gray-500 dark:text-gray-400">Exact copies or near-identical links</p></div>
+        <button onclick="closeSettingsModal(); openDupModal()" class="px-4 py-2 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-sm font-medium transition flex items-center space-x-2">
+          <i class="ic ic-copy"></i><span>Open</span>
+        </button>
+      </div>
+      <hr class="border-gray-100 dark:border-gray-700">
+      <div class="flex items-center justify-between">
+        <div><h4 class="text-sm font-semibold">Export Bookmarks</h4><p class="text-xs text-gray-500 dark:text-gray-400">Save or share a backup JSON file</p></div>
+        <button onclick="exportData()" class="px-4 py-2 rounded-xl bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/50 text-sm font-medium transition flex items-center space-x-2">
+          <i class="ic ic-download"></i><span>Export</span>
+        </button>
+      </div>
+      <hr class="border-gray-100 dark:border-gray-700">
+      <div>
+        <h4 class="text-sm font-semibold mb-1">Import Bookmarks (safe merge)</h4>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">Accepts a Blue Jay backup (.json) or a bookmarks export from Chrome, Edge, Firefox or Safari (.html). Nothing is overwritten or deleted: new links are added, and links you already have only get missing folder, tags, notes or favourite filled in. You can undo, and a backup is kept.</p>
+        <label class="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-4 cursor-pointer hover:border-green-500 transition bg-gray-50 dark:bg-gray-900">
+          <i class="ic ic-upload text-gray-400 mb-1"></i>
+          <span class="text-xs font-medium text-gray-600 dark:text-gray-300">Click to choose a .json or .html file</span>
+          <input type="file" id="importFile" accept=".json,.html,.htm,application/json,text/html" onchange="importData(event)" class="hidden">
+        </label>
+        <button onclick="restoreBackup()" class="mt-3 text-xs text-gray-500 dark:text-gray-400 hover:text-green-600 underline">Restore pre-import backup</button>
+      </div>
+      <hr class="border-gray-100 dark:border-gray-700">
+      <div class="flex items-center justify-between">
+        <div><h4 class="text-sm font-semibold">Delete All Bookmarks</h4><p class="text-xs text-gray-500 dark:text-gray-400">Export first (undo is offered right after)</p></div>
+        <button onclick="deleteAll()" class="px-4 py-2 rounded-xl bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/50 text-sm font-medium transition flex items-center space-x-2">
+          <i class="ic ic-trash-2"></i><span>Delete</span>
+        </button>
+      </div>
+    </div>
+    <div class="mt-8 pt-4 border-t border-gray-100 dark:border-gray-700 text-center">
+      <p class="text-xs font-semibold text-gray-500 dark:text-gray-400">BLUE JAY BOOKMARKS</p>
+      <p class="text-xs font-semibold text-gray-500 dark:text-gray-400">Made by REAPER-357</p>
+    </div>
+  </div>
+</div>
+
+<!-- Dialog (replaces the browser's confirm / prompt, which Android WebViews can drop) -->
+<div id="dialogModal" class="fixed inset-0 z-[70] bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="dlgTitle">
+  <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-gray-200 dark:border-gray-700">
+    <h3 id="dlgTitle" class="text-lg font-bold mb-2"></h3>
+    <p id="dlgMsg" class="text-sm text-gray-600 dark:text-gray-300 whitespace-pre-line break-words"></p>
+    <input id="dlgInput" type="text" class="hidden mt-4 w-full px-3.5 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-green-500 focus:outline-none">
+    <div id="dlgButtons" class="mt-5 flex flex-wrap justify-end gap-2"></div>
+  </div>
+</div>
+
+<div id="toast" class="fixed bottom-24 sm:bottom-5 right-5 z-[80] transform translate-y-20 opacity-0 pointer-events-none transition-all duration-300 bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-4 py-3 rounded-xl shadow-lg text-sm font-medium flex items-center space-x-3 max-w-[calc(100%-2.5rem)]">
+  <i class="ic ic-circle-check text-green-400 flex-shrink-0"></i><span id="toastMessage" class="break-words min-w-0"></span>
+  <button id="toastUndo" onclick="undoLast()" class="hidden underline text-green-400 dark:text-green-600 font-semibold flex-shrink-0">Undo</button>
+</div>
+
+<footer class="safe-bottom mt-auto pt-8 pb-24 flex flex-col items-center justify-center text-center border-t border-gray-200 dark:border-gray-800">
+  <img src="icon.png" alt="" class="w-40 h-40 rounded-2xl object-cover shadow-lg mb-3 border border-gray-300 dark:border-gray-700" onerror="this.style.display='none'">
+  <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Made by REAPER-357</p>
+</footer>
+
+<script src="core.js"></script>
+<script src="sync.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
