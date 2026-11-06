@@ -1,6 +1,6 @@
 {
   "appId": "com.reaper357.wayfinder",
-  "appName": "Blue Jay Bookmarks",
+  "appName": "Way-Finder Maps",
   "webDir": "www",
   "android": { "allowMixedContent": false }
 }

@@ -1,8 +1,8 @@
 {
-  "name": "bluejay-bookmarks",
-  "version": "2.0.0",
+  "name": "Way-Finder Maps",
+  "version": "1.0.0",
   "private": true,
-  "description": "Blue Jay Bookmarks - offline web app wrapped for Android with Capacitor",
+  "description": "Way-Finder Maps - offline web app wrapped for Android with Capacitor",
   "scripts": {
     "test": "node tests/core.test.js && node tests/sync.test.js",
     "build": "node scripts/build.js",
@@ -11,7 +11,7 @@
     "android:open": "npx cap open android"
   },
   "dependencies": {
-    "@capacitor/android": "^6.0.0",
+    "@capacitor/android": "^6.2.3",
     "@capacitor/app": "^6.0.0",
     "@capacitor/browser": "^6.0.0",
     "@capacitor/core": "^6.0.0",
