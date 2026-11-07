@@ -1,6 +1,6 @@
-/* Way-Finder Maps service worker: caches the app itself so it opens offline.
+/* Wayfinder Maps service worker: caches the app itself so it opens offline.
    It never caches map tiles from the network (privacy + storage). */
-const CACHE = 'wayfinder-shell-v1';
+const CACHE = 'wayfinder-shell-v2';
 const SHELL = [
   './', './index.html', './manifest.json', './small-icon.png', './icon.png',
   './assets/lib/maplibre-gl.js', './assets/lib/maplibre-gl.css', './assets/lib/pmtiles.js'

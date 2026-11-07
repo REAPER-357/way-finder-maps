@@ -58,6 +58,16 @@ Offline labels need the Protomaps font files in `assets/fonts/` (github.com/prot
 - Double tap: drop a pin
 - Long press: Copy location, Save location, Drop pin, Share, Measure from here
 
+## Search
+
+Type a name and press Enter. Saved places and pasted coordinates are found on the phone. For other place names the app can search online using OpenStreetMap's Nominatim service. It asks the first time, sends only your search text (they also see your IP address), and can be turned On, Off or Ask in Settings. It is switched off in Offline mode.
+
+## Directions
+
+Wayfinder Maps does not calculate routes. Tap Directions on a place, or long-press and choose "Directions to here" (or "Directions from here" to set a start pin first).
+- Open in navigation app: hands the destination to an app on your phone, such as OsmAnd or Organic Maps, which routes from where you are. Nothing is sent by Wayfinder Maps.
+- Route on openstreetmap.org: opens the OpenStreetMap website in your browser with the start and end points, for car, bike or walking.
+
 ## Names
 
 Labels use the names in the map data. Lake Ontario and Gulf of Mexico are kept as those names even if a data source uses another label.

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>Way-Finder Maps</title>
+<title>Wayfinder Maps</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#000000">
 <meta name="mobile-web-app-capable" content="yes">
@@ -97,13 +97,15 @@ a{color:var(--accent)}
 .maplibregl-ctrl-bottom-left,.maplibregl-ctrl-bottom-right{margin-bottom:var(--sa-b)}
 .maplibregl-ctrl-attrib{background:rgba(0,0,0,.6)!important;color:#ccc!important;font-size:10px}
 .maplibregl-ctrl-attrib a{color:#cfe0ff!important}
+.crow.wrap{flex-wrap:wrap}.crow.wrap button{flex:1 1 30%}
+.ri.muted{cursor:default;color:var(--muted)}
 </style>
 </head>
 <body class="t-dark">
 <div id="map"></div>
 
 <div id="top">
-  <div id="sbox"><span data-ic="search" class="muted"></span><input id="q" type="search" placeholder="Search saved places or coordinates" autocomplete="off" autocapitalize="off" enterkeyhint="search"><button id="qx" class="x hide" data-act="clearq" data-ic="x" aria-label="Clear"></button></div>
+  <div id="sbox"><span data-ic="search" class="muted"></span><input id="q" type="search" placeholder="Search places or coordinates" autocomplete="off" autocapitalize="off" enterkeyhint="search"><button id="qx" class="x hide" data-act="clearq" data-ic="x" aria-label="Clear"></button></div>
   <button class="fab" data-act="settings" data-ic="settings" aria-label="Settings" title="Settings"></button>
 </div>
 <div id="results" class="hide"></div>
@@ -127,7 +129,7 @@ a{color:var(--accent)}
 <div id="sheet"><div class="sh"><span id="sT"></span><button class="x" data-act="sclose" data-ic="x" aria-label="Close"></button></div><div id="sB"></div></div>
 <div id="toast" class="hide"></div>
 <div id="dlg" class="hide"></div>
-<div id="splash"><div><img src="icon.png" alt="" onerror="this.remove()"><h1>WAY-FINDER MAPS</h1></div></div>
+<div id="splash"><div><img src="icon.png" alt="" onerror="this.remove()"><h1>WAYFINDER MAPS</h1></div></div>
 
 <script src="assets/lib/maplibre-gl.js"></script>
 <script src="assets/lib/pmtiles.js"></script>
@@ -160,10 +162,10 @@ function parseCoord(str){
 }
 function buildGPX(P,T){const w=P.map(p=>'<wpt lat="'+p.lat+'" lon="'+p.lon+'"><name>'+esc(p.name)+'</name>'+(p.note?'<desc>'+esc(p.note)+'</desc>':'')+'</wpt>').join('');
   const t=T.map(k=>'<trk><name>'+esc(k.name)+'</name><trkseg>'+k.pts.map(q=>'<trkpt lat="'+q[1]+'" lon="'+q[0]+'">'+(q[2]?'<time>'+new Date(q[2]).toISOString()+'</time>':'')+'</trkpt>').join('')+'</trkseg></trk>').join('');
-  return '<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="Way-Finder Maps" xmlns="http://www.topografix.com/GPX/1/1">'+w+t+'</gpx>';}
+  return '<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="Wayfinder Maps" xmlns="http://www.topografix.com/GPX/1/1">'+w+t+'</gpx>';}
 function buildKML(P,T){const w=P.map(p=>'<Placemark><name>'+esc(p.name)+'</name>'+(p.note?'<description>'+esc(p.note)+'</description>':'')+'<Point><coordinates>'+p.lon+','+p.lat+',0</coordinates></Point></Placemark>').join('');
   const t=T.map(k=>'<Placemark><name>'+esc(k.name)+'</name><LineString><coordinates>'+k.pts.map(q=>q[0]+','+q[1]+',0').join(' ')+'</coordinates></LineString></Placemark>').join('');
-  return '<?xml version="1.0" encoding="UTF-8"?>\n<kml xmlns="http://www.opengis.net/kml/2.2"><Document><name>Way-Finder Maps</name>'+w+t+'</Document></kml>';}
+  return '<?xml version="1.0" encoding="UTF-8"?>\n<kml xmlns="http://www.opengis.net/kml/2.2"><Document><name>Wayfinder Maps</name>'+w+t+'</Document></kml>';}
 function buildGeoJSON(P,T){return JSON.stringify({type:'FeatureCollection',features:[
   ...P.map(p=>({type:'Feature',properties:{name:p.name,description:p.note||''},geometry:{type:'Point',coordinates:[p.lon,p.lat]}})),
   ...T.map(k=>({type:'Feature',properties:{name:k.name},geometry:{type:'LineString',coordinates:k.pts.map(q=>[q[0],q[1]])}}))]},null,1);}
@@ -173,7 +175,7 @@ function buildGeoJSON(P,T){return JSON.stringify({type:'FeatureCollection',featu
 const $=s=>document.querySelector(s);
 const uid=()=>(crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2,8));
 const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){toast('Could not save (storage full or blocked)');}}};
-const S=Object.assign({theme:'dark',accent:'#2f80ed',units:'metric',coord:'dec',source:'online',lang:'local',active:[],seen:[]},store.get('wf.s',{}));
+const S=Object.assign({theme:'dark',accent:'#2f80ed',units:'metric',coord:'dec',source:'online',lang:'local',geo:'ask',rmode:'car',active:[],seen:[]},store.get('wf.s',{}));
 const DB=Object.assign({folders:[],places:[],tracks:[]},store.get('wf.d',{}));
 const saveS=()=>store.set('wf.s',S),saveD=()=>store.set('wf.d',DB);
 const ACCENTS=['#2f80ed','#38bdf8','#22c55e','#f59e0b','#ef4444','#ec4899','#a855f7','#e5e7eb'];
@@ -198,7 +200,10 @@ upload:'<path d="M12 16V5M7 9l5-5 5 5M5 20h14"/>',
 undo:'<path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/>',
 check:'<path d="m5 12 5 5 9-10"/>',
 eye:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
-map:'<path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/>'};
+map:'<path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/>',
+route:'<circle cx="6" cy="19" r="2.2"/><circle cx="18" cy="5" r="2.2"/><path d="M8.2 19H15a3.5 3.5 0 0 0 0-7H9a3.5 3.5 0 0 1 0-7h6.8"/>',
+globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
+flag:'<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>'};
 const ic=(n,s)=>'<svg viewBox="0 0 24 24" width="'+(s||20)+'" height="'+(s||20)+'" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+ICONS[n]+'</svg>';
 document.querySelectorAll('[data-ic]').forEach(e=>e.innerHTML=ic(e.dataset.ic));
 
@@ -343,7 +348,7 @@ async function restoreDir(){const h=await idbGet('dir');if(!h)return;dirHandle=h
 /* ---------- map ---------- */
 let map=null,scaleCtl=null,pinMk=null,meMk=null,markers=[],sel=null;
 if(!window.maplibregl){
-  document.body.insertAdjacentHTML('beforeend','<div id="setup"><h2>Way-Finder Maps needs its map library</h2><p>Copy these files into <code>assets/lib/</code> next to index.html:</p><pre>maplibre-gl.js\nmaplibre-gl.css\npmtiles.js</pre><p>Get them from the <b>maplibre-gl</b> and <b>pmtiles</b> npm packages (the <code>dist</code> folders) or their GitHub releases. Then reload. See README.md.</p></div>');
+  document.body.insertAdjacentHTML('beforeend','<div id="setup"><h2>Wayfinder Maps needs its map library</h2><p>Copy these files into <code>assets/lib/</code> next to index.html:</p><pre>maplibre-gl.js\nmaplibre-gl.css\npmtiles.js</pre><p>Get them from the <b>maplibre-gl</b> and <b>pmtiles</b> npm packages (the <code>dist</code> folders) or their GitHub releases. Then reload. See README.md.</p></div>');
   $('#splash').remove();
 }else{
   if(hasPM()){proto=new pmtiles.Protocol();maplibregl.addProtocol('pmtiles',proto.tile);}
@@ -393,19 +398,21 @@ function openCtx(pt,ll){
    {l:'Save location',i:'bookmark',f:()=>editPlace(null,{lat:ll.lat,lon:ll.lng})},
    {l:'Drop pin',i:'pin',f:()=>dropPin(ll)},
    {l:'Share',i:'share',f:()=>shareLoc(ll.lat,ll.lng,'Location')},
+   {l:'Directions to here',i:'route',f:()=>openDirections(ll.lat,ll.lng,null)},
+   {l:'Directions from here',i:'flag',f:()=>setStart(ll.lat,ll.lng)},
    {l:'Measure from here',i:'ruler',f:()=>startMeasure(ll)}]);
 }
 
 /* ---------- pin & card ---------- */
 function pinEl(color,size){const d=document.createElement('div');d.className='pin';d.innerHTML='<svg viewBox="0 0 24 32" width="'+size+'" height="'+Math.round(size*32/24)+'"><path d="M12 31S2 20.5 2 12a10 10 0 0 1 20 0c0 8.5-10 19-10 19z" fill="'+color+'" stroke="#fff" stroke-width="2"/><circle cx="12" cy="12" r="3.6" fill="#fff"/></svg>';return d;}
 function dropPin(ll){select(ll.lat,ll.lng,null);}
-function select(lat,lon,place){
-  closeResults();closeCtx();sel={lat,lon,place};
+function select(lat,lon,place,title){
+  closeResults();closeCtx();sel={lat,lon,place,title};
   if(pinMk){pinMk.remove();pinMk=null;}
   if(!place){pinMk=new maplibregl.Marker({element:pinEl(S.accent,36),anchor:'bottom'}).setLngLat([lon,lat]).addTo(map);}
   const c=$('#card'),fname=place&&place.f?(DB.folders.find(f=>f.id===place.f)||{}).name:'';
-  c.innerHTML='<div class="ct"><div><div id="cT">'+esc(place?place.name:'Dropped pin')+'</div><div class="muted">'+esc(fmtCoord(lat,lon,S.coord))+'</div>'+(fname?'<div class="muted">'+ic('folder',13)+' '+esc(fname)+'</div>':'')+(place&&place.note?'<div class="muted">'+esc(place.note)+'</div>':'')+'</div><button class="x" data-act="cardx" aria-label="Close">'+ic('x')+'</button></div>'+
-   '<div class="crow"><button class="pri" data-act="csave">'+ic(place?'edit':'bookmark',16)+(place?'Edit':'Save')+'</button><button data-act="ccopy">'+ic('copy',16)+'Copy</button><button data-act="cshare">'+ic('share',16)+'Share</button><button data-act="cmeas">'+ic('ruler',16)+'Measure</button></div>';
+  c.innerHTML='<div class="ct"><div><div id="cT">'+esc(place?place.name:(title||'Dropped pin'))+'</div><div class="muted">'+esc(fmtCoord(lat,lon,S.coord))+'</div>'+(fname?'<div class="muted">'+ic('folder',13)+' '+esc(fname)+'</div>':'')+(place&&place.note?'<div class="muted">'+esc(place.note)+'</div>':'')+'</div><button class="x" data-act="cardx" aria-label="Close">'+ic('x')+'</button></div>'+
+   '<div class="crow wrap"><button class="pri" data-act="csave">'+ic(place?'edit':'bookmark',16)+(place?'Edit':'Save')+'</button><button data-act="cdir">'+ic('route',16)+'Directions</button><button data-act="ccopy">'+ic('copy',16)+'Copy</button><button data-act="cshare">'+ic('share',16)+'Share</button><button data-act="cmeas">'+ic('ruler',16)+'Measure</button></div>';
   c.classList.remove('hide');$('#mbar').classList.add('hide');
   const p=map.project([lon,lat]);if(p.y>innerHeight-290||p.y<90||p.x<20||p.x>innerWidth-20)map.easeTo({center:[lon,lat],offset:[0,-110],duration:300});
 }
@@ -423,7 +430,7 @@ function renderMarkers(){if(!map)return;markers.forEach(m=>m.remove());markers=[
   DB.places.forEach(p=>{const el=pinEl(p.c||S.accent,26);el.title=p.name;el.addEventListener('click',e=>{e.stopPropagation();select(p.lat,p.lon,p);});el.addEventListener('contextmenu',e=>e.stopPropagation());markers.push(new maplibregl.Marker({element:el,anchor:'bottom'}).setLngLat([p.lon,p.lat]).addTo(map));});}
 let edit=null;
 function editPlace(place,pos){
-  edit={place,pos,c:place?(place.c||S.accent):S.accent};const p=place||{name:'',note:'',f:''};
+  edit={place,pos,c:place?(place.c||S.accent):S.accent};const p=place||{name:(pos&&pos.name)||'',note:'',f:''};
   const lat=place?place.lat:pos.lat,lon=place?place.lon:pos.lon;
   openSheet(place?'Edit place':'Save place',
    '<div class="row"><label>Name</label><input id="pn" value="'+esc(p.name)+'" placeholder="'+esc(fmtCoord(lat,lon,'dec'))+'"></div>'+
@@ -459,12 +466,54 @@ function goPlace(p){closeSheet();map.easeTo({center:[p.lon,p.lat],zoom:Math.max(
 function runSearch(){const q=$('#q').value.trim(),box=$('#results'),out=[];$('#qx').classList.toggle('hide',!q);
   const c=parseCoord(q);if(c)out.push({t:'Go to '+fmtCoord(c.lat,c.lon,S.coord),s:'Coordinates',i:'pin',f:()=>{map.easeTo({center:[c.lon,c.lat],zoom:Math.max(map.getZoom(),15),duration:700});select(c.lat,c.lon,null);}});
   const ql=q.toLowerCase();DB.places.filter(p=>!q||(p.name+' '+(p.note||'')).toLowerCase().includes(ql)).slice(0,8).forEach(p=>out.push({t:p.name,s:p.note||fmtCoord(p.lat,p.lon,S.coord),i:'bookmark',f:()=>{map.easeTo({center:[p.lon,p.lat],zoom:Math.max(map.getZoom(),15),duration:700});select(p.lat,p.lon,p);}}));
+  if(q.length>=2)out.push({t:'Search the map for "'+q+'"',s:'Online search via OpenStreetMap Nominatim',i:'globe',f:()=>onlineSearch(q)});
   if(!out.length){box.classList.add('hide');return;}
   box.innerHTML='';out.forEach(o=>{const b=document.createElement('button');b.className='ri';b.innerHTML='<span style="color:var(--accent)">'+ic(o.i)+'</span><span><b>'+esc(o.t)+'</b><small>'+esc(o.s)+'</small></span>';b.onclick=()=>{closeResults();$('#q').blur();o.f();};box.appendChild(b);});
   box.classList.remove('hide');box._first=out[0];}
 function closeResults(){$('#results').classList.add('hide');}
 $('#q').addEventListener('input',runSearch);$('#q').addEventListener('focus',runSearch);
 $('#q').addEventListener('keydown',e=>{if(e.key==='Enter'){const f=$('#results')._first;if(f&&!$('#results').classList.contains('hide')){closeResults();$('#q').blur();f.f();}}});
+
+/* ---------- online place search (optional, asks first) ---------- */
+let geoCtl=null,geoLast=0;const geoCache=new Map();
+function goFound(r,lat,lon,name){select(lat,lon,null,r.name||name);
+  const bb=r.boundingbox&&r.boundingbox.map(Number);
+  if(bb&&bb.length===4&&bb.every(isFinite)&&(bb[1]-bb[0]>0.002||bb[3]-bb[2]>0.002))map.fitBounds([[bb[2],bb[0]],[bb[3],bb[1]]],{padding:60,maxZoom:16,duration:800});
+  else map.easeTo({center:[lon,lat],zoom:Math.max(map.getZoom(),15),duration:700});}
+async function onlineSearch(q){
+  if(S.source==='offline'){toast('Offline mode is on, so online search is off');return;}
+  if(S.geo==='off'){toast('Online search is off. Turn it on in Settings.');return;}
+  if(S.geo==='ask'){const ok=await dialog({title:'Search online?',text:'To find places by name, your search text is sent to OpenStreetMap’s Nominatim service (openstreetmap.org). They will see the text and your IP address. Nothing else is sent. You can change this in Settings.',ok:'Allow'});if(!ok)return;S.geo='on';saveS();}
+  const box=$('#results');box.innerHTML='<div class="ri muted">Searching…</div>';box.classList.remove('hide');
+  let list=geoCache.get(q);
+  if(!list){
+    const wait=1100-(Date.now()-geoLast);if(wait>0)await new Promise(r=>setTimeout(r,wait));
+    if(geoCtl)geoCtl.abort();geoCtl=new AbortController();geoLast=Date.now();
+    try{const r=await fetch('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=8&q='+encodeURIComponent(q)+(S.lang==='en'?'&accept-language=en':''),{signal:geoCtl.signal});
+      if(!r.ok)throw new Error('HTTP '+r.status);list=await r.json();geoCache.set(q,list);}
+    catch(e){if(e&&e.name==='AbortError')return;box.innerHTML='<div class="ri muted">Search failed. Check your connection.</div>';return;}}
+  if(!list.length){box.innerHTML='<div class="ri muted">No results for “'+esc(q)+'”</div>';return;}
+  box.innerHTML='';
+  list.forEach(r=>{const lat=+r.lat,lon=+r.lon;if(!validLL(lat,lon))return;const parts=String(r.display_name||'').split(', ');
+    const b=document.createElement('button');b.className='ri';
+    b.innerHTML='<span style="color:var(--accent)">'+ic('pin')+'</span><span><b>'+esc(r.name||parts[0])+'</b><small>'+esc(parts.slice(1,4).join(', '))+'</small></span>';
+    b.onclick=()=>{closeResults();$('#q').blur();goFound(r,lat,lon,parts[0]);};box.appendChild(b);});}
+
+/* ---------- directions: hand-off only, nothing is calculated here ---------- */
+let routeFrom=null,startMk=null,dirDest=null;
+function setStart(lat,lon){routeFrom={lat,lon};if(startMk)startMk.remove();startMk=new maplibregl.Marker({element:pinEl('#22c55e',26),anchor:'bottom'}).setLngLat([lon,lat]).addTo(map);toast('Start set. Long-press the destination and choose Directions to here.');}
+function clearStart(){routeFrom=null;if(startMk){startMk.remove();startMk=null;}}
+function dirOrigin(){if(routeFrom)return{p:routeFrom,t:'your start pin'};if(me)return{p:{lat:me.lat,lon:me.lon},t:'your last known location'};return{p:null,t:'you choose it on the site'};}
+function osmRouteUrl(o,d,mode){const eng={car:'fossgis_osrm_car',bike:'fossgis_osrm_bike',foot:'fossgis_osrm_foot'}[mode]||'fossgis_osrm_car';const f=p=>p?p.lat.toFixed(6)+','+p.lon.toFixed(6):'';return 'https://www.openstreetmap.org/directions?engine='+eng+'&route='+f(o)+';'+f(d);}
+function openDirections(lat,lon,name){dirDest={lat,lon,name:name||fmtCoord(lat,lon,'dec')};renderDirections();}
+function renderDirections(){const d=dirDest,o=dirOrigin();
+  openSheet('Directions','<p><b>To:</b> '+esc(d.name)+'<br><span class="muted">'+esc(fmtCoord(d.lat,d.lon,S.coord))+'</span></p>'+
+   '<p><b>From:</b> <span class="muted">'+esc(o.t)+'</span></p>'+
+   '<div class="row"><label>Travel by</label>'+seg('rmode',[['car','Car'],['bike','Bike'],['foot','Walk']])+'</div>'+
+   '<div class="btns"><button class="btn pri" data-act="navapp">'+ic('route',16)+'Open in navigation app</button></div>'+
+   '<p class="muted">Opens a navigation app installed on your phone, such as OsmAnd or Organic Maps, and routes from your current location. Wayfinder Maps sends nothing.</p>'+
+   '<div class="btns"><button class="btn" data-act="osmroute">'+ic('globe',16)+'Route on openstreetmap.org</button>'+(routeFrom?'<button class="btn" data-act="clrstart">'+ic('x',16)+'Clear start pin</button>':'')+'</div>'+
+   '<p class="muted">Opens the OpenStreetMap website in your browser. That site will see the start and end points.</p>');}
 
 /* ---------- measure ---------- */
 function startMeasure(ll){measuring=true;measurePts=ll?[[ll.lng,ll.lat]]:[];hideCard();$('#bMeasure').classList.add('on');updateMeasure();toast('Tap the map to add points');}
@@ -533,6 +582,7 @@ function renderSettings(){openSheet('Settings',
  '<div class="row"><label>Coordinates</label>'+seg('coord',[['dec','Decimal'],['dms','Deg\u00b0 min\u2032 sec\u2033']])+'</div>'+
  '<div class="row"><label>Map source</label>'+seg('source',[['online','Online'],['offline','Offline files']])+'</div>'+
  '<div class="row"><label>Labels</label>'+seg('lang',[['local','Local names'],['en','English if available']])+'</div>'+
+ '<div class="row"><label>Online place search</label>'+seg('geo',[['ask','Ask'],['on','On'],['off','Off']])+'</div>'+
  '<div class="btns"><button class="btn" data-act="offline">'+ic('map',16)+'Offline maps</button><button class="btn" data-act="about">About &amp; privacy</button></div>');}
 function renderOffline(){const sup='showDirectoryPicker' in window;
   const b=map?map.getBounds():null,bbox=b?[b.getWest(),b.getSouth(),b.getEast(),b.getNorth()].map(n=>n.toFixed(3)).join(','):'W,S,E,N';
@@ -545,8 +595,8 @@ function renderOffline(){const sup='showDirectoryPicker' in window;
   '<div class="list">'+(FILES.length?FILES.map((f,i)=>'<label class="it"><input type="checkbox" data-act="toggle" data-n="'+i+'" style="width:auto"'+(S.active.includes(f.name)?' checked':'')+'><span class="g"><b>'+esc(f.name)+'</b><small>'+(f.size/1048576).toFixed(0)+' MB</small></span></label>').join(''):'<p class="muted">No map files loaded yet.</p>')+'</div>'+
   '<div class="row"><label>Make a map for your current view</label><p class="muted">Install the free <code>pmtiles</code> command-line tool, then run this on a computer. Use the latest build file listed at maps.protomaps.com/builds. Copy the result into your maps folder.</p><pre id="cmd">pmtiles extract https://build.protomaps.com/YYYYMMDD.pmtiles my-map.pmtiles --bbox='+bbox+' --maxzoom=14</pre><div class="btns"><button class="btn" data-act="copycmd">'+ic('copy',16)+'Copy command</button></div></div>'+
   '<p class="muted">Offline labels need the Protomaps font files in <code>assets/fonts/</code> (see README). Chinese, Japanese and Korean labels use your phone\u2019s own fonts.</p>');}
-function renderAbout(){openSheet('About Way-Finder Maps','<p style="text-align:center"><img src="icon.png" alt="" style="max-width:60%" onerror="this.remove()"></p>'+
-  '<p>A small, private map app. A nod to Toronto.</p><p class="muted">No account, no analytics, no ads. In Online mode the map tiles are fetched from OpenFreeMap (tiles.openfreemap.org), which sees your IP address and the tiles you view. In Offline mode the app makes no map requests at all. Saved places, tracks and settings stay on this device.</p>'+
+function renderAbout(){openSheet('About Wayfinder Maps','<p style="text-align:center"><img src="icon.png" alt="" style="max-width:60%" onerror="this.remove()"></p>'+
+  '<p>A small, private map app. A nod to Toronto.</p><p class="muted">No account, no analytics, no ads. In Online mode the map tiles are fetched from OpenFreeMap (tiles.openfreemap.org), which sees your IP address and the tiles you view. In Offline mode the app makes no map requests at all. Saved places, tracks and settings stay on this device. Two optional features contact other sites only when you use them: online place search (sends your search text to OpenStreetMap Nominatim) and Route on openstreetmap.org (opens their website with your start and end points).</p>'+
   '<p class="muted">Map data \u00a9 OpenStreetMap contributors. Tiles by OpenFreeMap / OpenMapTiles and Protomaps. Rendered with MapLibre GL JS. All free and open-source.</p>');}
 
 /* ---------- actions ---------- */
@@ -555,10 +605,14 @@ const ACT={
  clearq(){$('#q').value='';runSearch();closeResults();},
  north(){map.easeTo({bearing:0,duration:400});},locate,zin(){map.zoomIn();},zout(){map.zoomOut();},
  measure(){measuring?stopMeasure():startMeasure(null);},rec:toggleRec,
- cardx:hideCard,csave(){if(!sel)return;sel.place?editPlace(sel.place):editPlace(null,{lat:sel.lat,lon:sel.lon});},
- ccopy:copyFormats,cshare(){if(sel)shareLoc(sel.lat,sel.lon,sel.place?sel.place.name:'Dropped pin');},cmeas(){if(sel)startMeasure({lng:sel.lon,lat:sel.lat});},
+ cardx:hideCard,cdir(){if(sel)openDirections(sel.lat,sel.lon,sel.place?sel.place.name:sel.title);},
+ navapp(){const d=dirDest,c=d.lat.toFixed(6)+','+d.lon.toFixed(6);const a=document.createElement('a');a.href='geo:'+c+'?q='+c+'('+encodeURIComponent(d.name)+')';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>{if(!document.hidden)toast('If nothing opened, install a navigation app such as OsmAnd or Organic Maps');},1500);},
+ osmroute(){const o=dirOrigin();window.open(osmRouteUrl(o.p,dirDest,S.rmode),'_blank','noopener');},
+ clrstart(){clearStart();renderDirections();},
+csave(){if(!sel)return;sel.place?editPlace(sel.place):editPlace(null,{lat:sel.lat,lon:sel.lon,name:sel.title});},
+ ccopy:copyFormats,cshare(){if(sel)shareLoc(sel.lat,sel.lon,sel.place?sel.place.name:(sel.title||'Dropped pin'));},cmeas(){if(sel)startMeasure({lng:sel.lon,lat:sel.lat});},
  mundo(){measurePts.pop();updateMeasure();},mclear(){measurePts=[];updateMeasure();},mdone(){stopMeasure();},
- set(d){S[d.k]=d.v;saveS();applyUI();if(['theme','source','lang'].includes(d.k))applyStyle();if(d.k==='units')setScale();
+ set(d){S[d.k]=d.v;saveS();if(d.k==='rmode'){renderDirections();return;}applyUI();if(['theme','source','lang'].includes(d.k))applyStyle();if(d.k==='units')setScale();
    if(d.k==='source'&&d.v==='offline'&&!FILES.some(f=>S.active.includes(f.name))){renderOffline();return;}renderSettings();},
  accent(d){S.accent=d.c;saveS();applyUI();applyStyle();renderSettings();},
  pcolor(d){edit.c=d.c;document.querySelectorAll('#pcs button').forEach(b=>b.classList.toggle('on',b.dataset.c===d.c));},
